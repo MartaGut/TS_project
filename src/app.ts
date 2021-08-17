@@ -1,3 +1,34 @@
+//Validator
+interface Validatable {
+    value: string | number;
+    required?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    min?: number;
+    max?: number;
+}
+
+function validate(validatableInput: Validatable) {
+    let isValid = true;
+    if(validatableInput.required) {
+        isValid = isValid && validatableInput.value.toString().trim().length !== 0;
+    }
+    if(validatableInput.minLength != null && typeof validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length > validatableInput.minLength;
+    }
+    if(validatableInput.maxLength != null && typeof validatableInput.value === 'string') {
+        isValid = isValid && validatableInput.value.length < validatableInput.maxLength;
+    }
+    if(validatableInput.min != null && typeof validatableInput.min === 'number') {
+        isValid = isValid && validatableInput.value > validatableInput.min;
+    }
+    if(validatableInput.max != null && typeof validatableInput.max === 'number') {
+        isValid = isValid && validatableInput.value < validatableInput.max;
+    }
+    return isValid
+}
+
+
 //autobind decorator
 function autobind(
     _: any, // _ = target
@@ -45,7 +76,33 @@ class ProjectInput {
     @autobind
     private submitHandler(event: Event) {
         event.preventDefault();
-        console.log(this.titleInputElement.value);
+        const UserInput = this.gatehrUserInput();
+        if(Array.isArray(UserInput)) {
+            const [title, desc,people] = UserInput;
+            console.log(title, desc, people);
+            this.clearInputs();
+        }
+
+    }
+
+    private clearInputs() {
+        this.titleInputElement.value = '';
+        this.descriptionInputElement.value = '';
+        this.peopleInputElement.value = '';
+    }
+
+    private gatehrUserInput(): [string, string, number] | void {
+        const enteredTitle = this.titleInputElement.value;
+        const enteredDescription = this.descriptionInputElement.value;
+        const enteredPeople = this.peopleInputElement.value;
+
+        if(1) {
+            alert('invalid Input, please try again');
+            return;
+        } else {
+           return [enteredTitle, enteredDescription, +enteredPeople]; 
+        }
+
     }
 
     private configure() {
